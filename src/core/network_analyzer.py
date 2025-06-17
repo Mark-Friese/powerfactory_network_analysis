@@ -49,7 +49,7 @@ class NetworkAnalyzer:
         self.voltage_analyzer = VoltageAnalyzer(self.pf_interface, self.config)
         
         # Initialize contingency manager
-        self.contingency_manager = ContingencyManager(self.pf_interface, self.config)
+        self.contingency_manager = ContingencyManager(self.pf_interface)
         
         # Analysis results storage
         self.base_case_results: Dict[str, List[AnalysisResult]] = {
@@ -449,6 +449,48 @@ class NetworkAnalyzer:
         except Exception as e:
             self.logger.error(f"Configuration validation failed: {e}")
             return False
+    
+    def filter_elements_by_area(self, elements: List[NetworkElement], area_pattern: str) -> List[NetworkElement]:
+        """
+        Filter network elements by geographic area.
+        
+        Args:
+            elements: List of network elements
+            area_pattern: Pattern to match (e.g., "Glenrothes*")
+        
+        Returns:
+            Filtered list of elements for the specified area
+        """
+        import fnmatch
+        
+        filtered_elements = []
+        for element in elements:
+            # Check if element name matches area pattern
+            if fnmatch.fnmatch(element.name, area_pattern):
+                filtered_elements.append(element)
+            
+            # Also check parent grid/substation if available
+            try:
+                if hasattr(element.powerfactory_object, 'GetParent'):
+                    parent = element.powerfactory_object.GetParent()
+                    if parent:
+                        parent_name = self.pf_interface.get_element_attribute(parent, 'loc_name')
+                        if parent_name and fnmatch.fnmatch(parent_name, area_pattern):
+                            filtered_elements.append(element)
+                            continue
+            except Exception:
+                pass  # Ignore errors in parent checking
+        
+        # Remove duplicates
+        unique_elements = []
+        seen_names = set()
+        for element in filtered_elements:
+            if element.name not in seen_names:
+                unique_elements.append(element)
+                seen_names.add(element.name)
+        
+        self.logger.info(f"Filtered to {len(unique_elements)} elements for area: {area_pattern}")
+        return unique_elements
     
     def get_network_elements(self) -> List[NetworkElement]:
         """Get loaded network elements."""

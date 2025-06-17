@@ -1,0 +1,211 @@
+# Glenrothes Area Contingency Analysis Configuration
+# Update asset names to match your PowerFactory model
+
+analysis:
+  # Scottish 33kV network specific thermal limits (%)
+  thermal_limits:
+    default: 90.0
+    transformers: 85.0  # 33/11kV primary transformers
+    lines: 90.0         # 33kV feeders
+    cables: 90.0        # 33kV cables
+    reactors: 70.0      # Bus-section reactors (lower limit due to impedance)
+  
+  # Voltage limits for Scottish distribution network (per unit)
+  voltage_limits:
+    scotland:
+      33.0:
+        min: 0.97  # 32.01kV (±3%)
+        max: 1.04  # 34.32kV (+4%)
+      11.0:
+        min: 0.95  # 10.45kV (±5%)
+        max: 1.05  # 11.55kV (+5%)
+  
+  # Analysis execution options
+  options:
+    run_base_case: true
+    run_contingency: true
+    run_thermal: true
+    run_voltage: true
+    max_contingencies: 100
+    include_out_of_service: false
+    parallel_processing: false
+
+# Regional network configuration
+regions:
+  scotland:
+    name: "Scotland"
+    code: "SCOT"
+    voltage_levels: [33.0, 11.0]
+
+# PowerFactory element types for analysis
+element_types:
+  thermal_elements:
+    - ElmLne    # Lines/Feeders
+    - ElmTr2    # 2-winding transformers
+    - ElmTr3    # 3-winding transformers  
+    - ElmCoup   # Bus couplers/sections
+    - ElmReac   # Reactors
+  
+  voltage_elements:
+    - ElmTerm   # Terminals/Busbars
+
+# Generation and BESS scenario definitions
+scenarios:
+  bess_elements:
+    # UPDATE THESE NAMES TO MATCH YOUR POWERFACTORY MODEL
+    bess_a: "Glenrothes_BESS_A"     # Name of first BESS unit
+    bess_b: "Glenrothes_BESS_B"     # Name of second BESS unit
+  
+  # Custom scenarios can be defined here
+  custom_scenarios:
+    - name: "Peak_Generation"
+      description: "Peak generation output scenario"
+      elements:
+        - name: "Glenrothes_Wind_Farm"   # Update to actual name
+          type: "ElmGenstat"
+          scaling_factor: 1.0
+      load_scaling: 0.7
+    
+    - name: "Light_Load"
+      description: "Light load conditions"
+      elements: []
+      load_scaling: 0.4
+
+# Contingency asset definitions
+contingencies:
+  priority_assets:
+    # 33/11kV Primary transformers - UPDATE PATTERNS TO MATCH YOUR MODEL
+    - pattern: "*Glenrothes*33/11*"
+      type: "ElmTr2"
+      description: "Glenrothes 33/11kV primary transformers"
+    
+    - pattern: "*Glenrothes*Primary*Transformer*"
+      type: "ElmTr2" 
+      description: "Primary transformers alternative naming"
+    
+    # 33kV Primary feeders
+    - pattern: "*Glenrothes*33kV*Feeder*"
+      type: "ElmLne"
+      description: "33kV primary feeder circuits"
+      
+    - pattern: "*Glenrothes*33kV*Circuit*"
+      type: "ElmLne"
+      description: "33kV circuits alternative naming"
+    
+    # Bus-section equipment
+    - pattern: "*Glenrothes*Bus*Section*"
+      type: "ElmCoup"
+      description: "Bus-section switches"
+    
+    - pattern: "*Glenrothes*Reactor*"
+      type: "ElmReac"  
+      description: "Bus-section reactors"
+      
+    - pattern: "*Glenrothes*Grid*Transformer*"
+      type: "ElmTr2"
+      description: "Grid supply transformers"
+
+# Network filtering options
+filters:
+  exclude_out_of_service: true
+  exclude_earthed_neutrals: true
+  minimum_voltage_level: 11.0  # kV - focus on 11kV and above
+  
+  # Geographic area filtering
+  area_patterns:
+    - "Glenrothes*"     # Main area pattern
+    - "*Glenrothes*"    # Alternative pattern
+  
+  # Asset type priorities for contingency analysis
+  priority_types:
+    - "ElmTr2"   # Transformers (highest priority)
+    - "ElmLne"   # Lines/feeders
+    - "ElmCoup"  # Bus sections
+    - "ElmReac"  # Reactors
+
+# Output and reporting configuration
+output:
+  formats: 
+    - excel
+    - csv
+  
+  include_scenarios: true
+  scenario_comparison: true
+  
+  excel:
+    include_charts: true
+    include_summary: true
+    scenario_tabs: true
+    max_rows_per_sheet: 10000
+  
+  csv:
+    include_headers: true
+    delimiter: ","
+  
+  # Report sections to generate
+  sections:
+    - violations           # Violation analysis
+    - asset_loading       # Thermal loading analysis
+    - voltage_profiles    # Voltage analysis
+    - contingency_summary # Contingency ranking
+    - scenario_comparison # Cross-scenario analysis
+    - worst_case_analysis # Worst-case identification
+    - bess_impact_analysis # BESS-specific analysis
+
+# Logging configuration
+logging:
+  level: INFO
+  file_logging: true
+  console_logging: true
+  max_file_size_mb: 50
+  backup_count: 5
+
+# Performance tuning
+performance:
+  load_flow_timeout: 30  # seconds
+  max_iterations: 100
+  convergence_tolerance: 1e-6
+
+# Violation severity thresholds
+violation_thresholds:
+  thermal:
+    low: 5.0      # % over limit
+    medium: 10.0  # % over limit  
+    high: 20.0    # % over limit
+  
+  voltage:
+    low: 2.0      # % deviation from limit
+    medium: 3.0   # % deviation from limit
+    high: 5.0     # % deviation from limit
+
+# Analysis validation rules
+validation:
+  required_elements:
+    - "Glenrothes_BESS_A"  # UPDATE TO ACTUAL NAMES
+    - "Glenrothes_BESS_B"  # UPDATE TO ACTUAL NAMES
+  
+  minimum_assets:
+    transformers: 2    # Minimum 2 transformers expected
+    feeders: 4        # Minimum 4 feeders expected
+    bess_units: 2     # Minimum 2 BESS units expected
+  
+  load_flow_checks:
+    check_convergence: true
+    check_islanding: true
+    max_voltage_deviation: 0.1  # pu
+
+# Documentation
+metadata:
+  analysis_type: "Scottish 33kV Distribution Contingency Analysis"
+  network_area: "Glenrothes"
+  voltage_levels: ["33kV", "11kV"]
+  key_assets: 
+    - "33/11kV Primary Transformers"
+    - "33kV Primary Feeders" 
+    - "BESS Units"
+    - "Bus-section Reactors"
+  
+  analysis_purpose: >
+    Evaluate network performance under different BESS export/import
+    combinations during single asset outage scenarios to identify
+    worst-case conditions and inform reinforcement planning.
