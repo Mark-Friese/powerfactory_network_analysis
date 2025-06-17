@@ -1,0 +1,65 @@
+analysis:
+  # Thermal loading limits (%)
+  thermal_limits:
+    default: 90.0
+    lines: 90.0
+    transformers: 85.0
+    cables: 90.0
+  
+  # Voltage limits by region and voltage level (per unit)
+  voltage_limits:
+    scotland:
+      33.0:
+        min: 0.97
+        max: 1.04
+      11.0:
+        min: 0.95
+        max: 1.05
+    england:
+      132.0:
+        min: 0.97
+        max: 1.04
+      33.0:
+        min: 0.97
+        max: 1.04
+      11.0:
+        min: 0.95
+        max: 1.05
+  
+  # Analysis options
+  options:
+    run_base_case: true
+    run_contingency: true
+    include_out_of_service: false
+    max_contingencies: 1000
+    parallel_processing: false
+
+# Output configuration
+output:
+  formats:
+    - excel
+    - csv
+  
+  excel:
+    include_charts: true
+    include_summary: true
+    max_rows_per_sheet: 10000
+  
+  csv:
+    include_headers: true
+    delimiter: ","
+  
+  # Report sections to include
+  sections:
+    - violations
+    - asset_loading
+    - voltage_profiles
+    - contingency_summary
+
+# Logging configuration
+logging:
+  level: INFO
+  file_logging: true
+  console_logging: true
+  max_file_size_mb: 50
+  backup_count: 5

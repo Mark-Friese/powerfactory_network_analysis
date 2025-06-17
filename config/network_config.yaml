@@ -1,0 +1,47 @@
+regions:
+  scotland:
+    name: "Scotland"
+    code: "SCOT"
+    voltage_levels: [33.0, 11.0]
+    network_elements:
+      lines: "*.ElmLne"
+      transformers: "*.ElmTr2"
+      busbars: "*.ElmTerm"
+    
+  england:
+    name: "England"
+    code: "ENG"
+    voltage_levels: [132.0, 33.0, 11.0]
+    network_elements:
+      lines: "*.ElmLne"
+      transformers: "*.ElmTr2"
+      busbars: "*.ElmTerm"
+
+# PowerFactory element types to analyze
+element_types:
+  thermal_elements:
+    - ElmLne    # Lines
+    - ElmTr2    # 2-winding transformers
+    - ElmTr3    # 3-winding transformers
+    - ElmCoup   # Couplers
+  
+  voltage_elements:
+    - ElmTerm   # Terminals/Busbars
+
+# PowerFactory result variables
+result_variables:
+  thermal:
+    loading: "m:loading"
+    current: "m:I:bus1"
+    power_flow: "m:P:bus1"
+  
+  voltage:
+    magnitude: "m:u"
+    angle: "m:phiu"
+    voltage_kv: "m:U"
+
+# Analysis filters
+filters:
+  exclude_out_of_service: true
+  exclude_earthed_neutrals: true
+  minimum_voltage_level: 1.0  # kV
