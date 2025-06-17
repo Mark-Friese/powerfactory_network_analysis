@@ -117,7 +117,11 @@ powerfactory_network_analysis/
 2. **Install Python dependencies:**
 
    ```bash
+   # Production dependencies
    pip install -r requirements.txt
+   
+   # Development dependencies (optional, for testing and development)
+   pip install -r requirements-dev.txt
    ```
 
 3. **Verify PowerFactory integration:**
@@ -472,6 +476,29 @@ See `requirements.txt` for complete list:
 
 This project is developed for use with PowerFactory distribution network analysis.
 
+## Author
+
+**Mark Friese**  
+Electrical Engineer  
+Email: mark.friese.meng@gmail.com  
+
+Specializing in Python automation for Power Systems analysis, with expertise in PowerFactory scripting, distribution network analysis, and power system studies.
+
+### About the Author
+
+Mark is an electrical engineer with a passion for automating power system analysis workflows. He has extensive experience in:
+
+- PowerFactory API development and automation
+- Distribution network analysis and modeling
+- Python development for engineering applications
+- Power system studies and contingency analysis
+- Data analysis and visualization for power systems
+
+Connect with Mark:
+- Email: mark.friese.meng@gmail.com
+- LinkedIn: [Mark Friese](https://linkedin.com/in/mark-friese)
+- Medium: [@mark.friese](https://medium.com/@mark.friese)
+
 ## Support
 
 For technical support:
@@ -480,3 +507,4 @@ For technical support:
 2. Review log files for detailed error information
 3. Run validation tools to identify configuration issues
 4. Consult PowerFactory documentation for API-specific questions
+5. Contact the author at mark.friese.meng@gmail.com for specific questions about this implementation

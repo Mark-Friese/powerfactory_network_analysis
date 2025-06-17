@@ -21,6 +21,7 @@ Icon
 ._*
 
 
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -173,6 +174,8 @@ ehthumbs_vista.db
 
 # Folder config file
 [Dd]esktop.ini
+
+docs/medium/
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/

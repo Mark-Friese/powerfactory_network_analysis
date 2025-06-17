@@ -55,10 +55,22 @@ class PowerFactoryInterface:
             if not self._connected:
                 self._app = pf.GetApplication()
                 if self._app is None:
-                    self.logger.error("Failed to get PowerFactory application")
-                    return False
+                    # Try alternative connection method
+                    try:
+                        self._app = pf.GetApplicationExt()
+                    except:
+                        pass
+                    
+                    if self._app is None:
+                        self.logger.error("Failed to get PowerFactory application. Ensure PowerFactory is running.")
+                        return False
                 
-                self._app.ClearOutputWindow()
+                # Clear output window safely
+                try:
+                    self._app.ClearOutputWindow()
+                except Exception as e:
+                    self.logger.debug(f"Could not clear output window: {e}")
+                
                 self._connected = True
                 self.logger.info("Connected to PowerFactory successfully")
             
