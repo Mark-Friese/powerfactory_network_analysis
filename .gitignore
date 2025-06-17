@@ -120,12 +120,18 @@ celerybeat.pid
 
 # Environments
 .env
+.env.local
+.env.development
+.env.production
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Keep environment template
+!.env.template
 
 # Rope project settings
 .ropeproject
@@ -148,7 +154,13 @@ dmypy.json
 cython_debug/
 
 ### VisualStudioCode ###
-.vscode/*
+# Keep VSCode workspace configuration but ignore personal settings
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+.vscode/settings-personal.json
+.vscode/.ropeproject
 *.code-workspace
 
 # Local History for Visual Studio Code
@@ -189,3 +201,48 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+### PowerFactory Specific ###
+# PowerFactory project files
+*.pfd
+*.pfx
+*.IntPrj
+*.IntGrf
+*.IntSch
+*.IntScr
+
+# PowerFactory backup files
+*.bak
+*.backup
+
+# PowerFactory temporary files
+*.tmp
+*.temp
+
+### Project Specific ###
+# Analysis output files
+output/reports/*.xlsx
+output/reports/*.csv
+output/logs/*.log
+output/data/*.json
+
+# Keep output directory structure
+!output/
+!output/reports/
+!output/logs/
+!output/data/
+!output/**/.gitkeep
+
+# Temporary analysis files
+*.analysis_temp
+*.pf_temp
+
+# Large datasets (if any)
+*.large
+*.dataset
+
+# Personal notes and temporary files
+notes.txt
+todo.txt
+temp_*
+*_temp.*

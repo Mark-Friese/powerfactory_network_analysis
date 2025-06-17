@@ -1,0 +1,245 @@
+{
+    // Python Configuration for PowerFactory (requires Python 3.11.x max)
+    "python.defaultInterpreterPath": "python",
+    "python.pythonPath": "python",
+    "python.terminal.activateEnvironment": true,
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    
+    // Specify Python interpreter search order (prioritize 3.11.9)
+    "python.interpreterPath": {
+        "windows": [
+            "C:\\Python311\\python.exe",
+            "C:\\Program Files\\Python311\\python.exe",
+            "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "${workspaceFolder}\\venv\\Scripts\\python.exe",
+            "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+            "python"
+        ]
+    },
+    
+    // PowerFactory specific environment
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/src/core",
+        "${workspaceFolder}/src/analyzers",
+        "${workspaceFolder}/src/models",
+        "${workspaceFolder}/src/reports",
+        "${workspaceFolder}/src/utils",
+        "C:\\Program Files\\DIgSILENT\\PowerFactory 2021 SP3\\Python\\3.9",
+        "C:\\Program Files\\DIgSILENT\\PowerFactory 2022\\Python\\3.9",
+        "C:\\Program Files\\DIgSILENT\\PowerFactory 2023\\Python\\3.9"
+    ],
+    
+    // Formatting and Linting
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": ["--line-length", "88"],
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=88",
+        "--extend-ignore=E203,W503"
+    ],
+    "python.linting.mypyEnabled": true,
+    "python.linting.mypyArgs": [
+        "--ignore-missing-imports",
+        "--follow-imports=silent",
+        "--show-column-numbers",
+        "--strict-optional",
+        "--python-version=3.11"
+    ],
+    
+    // Import sorting
+    "python.sortImports.args": [
+        "--profile", "black",
+        "--line-length", "88"
+    ],
+    
+    // Code formatting on save
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit",
+        "source.fixAll": "explicit"
+    },
+    
+    // Editor settings optimized for Python development
+    "editor.rulers": [88],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.wordWrap": "off",
+    "editor.renderWhitespace": "boundary",
+    
+    // File associations for PowerFactory project
+    "files.associations": {
+        "*.csv": "csv",
+        "*.yaml": "yaml",
+        "*.yml": "yaml",
+        "*.log": "log",
+        "*.pfd": "text",
+        "*.env": "properties",
+        ".env.*": "properties",
+        "requirements*.txt": "pip-requirements"
+    },
+    
+    // File watching exclusions
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/venv/**": true,
+        "**/.venv/**": true,
+        "**/output/**": true,
+        "**/logs/**": true,
+        "**/__pycache__/**": true,
+        "**/*.pyc": true,
+        "**/*.pyo": true,
+        "**/.pytest_cache/**": true,
+        "**/.coverage": true,
+        "**/htmlcov/**": true
+    },
+    
+    // Testing configuration
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestArgs": [
+        "tests",
+        "-v",
+        "--tb=short",
+        "--strict-markers"
+    ],
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    
+    // Git settings
+    "git.ignoreLimitWarning": true,
+    "git.autofetch": true,
+    
+    // Terminal settings
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    
+    // PowerFactory specific terminal profiles
+    "terminal.integrated.profiles.windows": {
+        "Command Prompt": {
+            "path": "C:\\Windows\\System32\\cmd.exe",
+            "args": [],
+            "icon": "terminal-cmd"
+        },
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell"
+        },
+        "PowerFactory Python": {
+            "path": "C:\\Windows\\System32\\cmd.exe",
+            "args": ["/k", "set PYTHONPATH=${workspaceFolder}\\src;%PYTHONPATH%"],
+            "icon": "symbol-misc"
+        }
+    },
+    
+    // IntelliSense settings
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.completeFunctionParens": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.include": [
+        "src/**",
+        "scripts/**",
+        "tests/**"
+    ],
+    "python.analysis.exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+        "**/venv",
+        "**/.venv",
+        "**/output"
+    ],
+    
+    // PowerFactory specific settings
+    "workbench.colorCustomizations": {
+        "tab.activeBorderTop": "#FF6B35",
+        "statusBar.background": "#FF6B35",
+        "statusBar.foreground": "#FFFFFF",
+        "activityBar.activeBorder": "#FF6B35"
+    },
+    
+    // Search settings
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/venv": true,
+        "**/.venv": true,
+        "**/output/**": true,
+        "**/logs/**": true,
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+        "**/.pytest_cache": true,
+        "**/htmlcov": true
+    },
+    
+    // Auto-save settings
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 10000,
+    
+    // Markdown settings for documentation
+    "markdown.preview.fontSize": 14,
+    "markdown.preview.lineHeight": 1.6,
+    
+    // YAML settings for configuration files
+    "yaml.schemas": {
+        "${workspaceFolder}/config/analysis_config.yaml": [
+            "/config/*.yaml",
+            "/config/*.yml"
+        ]
+    },
+    
+    // Error lens settings for better error visibility
+    "errorLens.enabledDiagnosticLevels": [
+        "error",
+        "warning"
+    ],
+    "errorLens.excludeBySource": [
+        "cSpell"
+    ],
+    
+    // CSV settings for data analysis
+    "csv-rainbow.enable": true,
+    "csv-rainbow.comment": "#",
+    
+    // Jupyter notebook settings
+    "jupyter.askForKernelRestart": false,
+    "jupyter.interactiveWindow.creationMode": "perFile",
+    "notebook.cellToolbarLocation": {
+        "default": "right"
+    },
+    
+    // File encoding settings
+    "files.encoding": "utf8",
+    "files.eol": "\\n",
+    
+    // PowerFactory Python version validation
+    "python.analysis.diagnosticMode": "workspace",
+    "python.languageServer": "Pylance",
+    
+    // Auto-completion settings
+    "editor.suggest.localityBonus": true,
+    "editor.suggest.shareSuggestSelections": true,
+    "editor.wordBasedSuggestions": false,
+    
+    // Code folding
+    "editor.foldingStrategy": "indentation",
+    "editor.showFoldingControls": "always",
+    
+    // Minimap settings
+    "editor.minimap.enabled": true,
+    "editor.minimap.showSlider": "always",
+    
+    // PowerFactory project specific exclusions
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+        "**/.pytest_cache": true,
+        "**/output/logs/*.log": false,
+        "**/output/reports/*.xlsx": false,
+        "**/output/reports/*.csv": false
+    }
+}

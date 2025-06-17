@@ -1,0 +1,383 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "PowerFactory: Install Dependencies",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "pip", "install", "-r", "requirements.txt"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Install production dependencies for PowerFactory analysis"
+        },
+        {
+            "label": "PowerFactory: Install Dev Dependencies",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "pip", "install", "-r", "requirements-dev.txt"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Install development dependencies"
+        },
+        {
+            "label": "PowerFactory: Run Full Analysis",
+            "type": "shell",
+            "command": "python",
+            "args": ["scripts/run_analysis.py", "--verbose"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            },
+            "options": {
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/src"
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Run complete PowerFactory network analysis"
+        },
+        {
+            "label": "PowerFactory: Base Case Only",
+            "type": "shell",
+            "command": "python",
+            "args": ["scripts/run_analysis.py", "--base-case-only", "--verbose"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            },
+            "options": {
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/src"
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Run base case analysis only (no contingencies)"
+        },
+        {
+            "label": "PowerFactory: Validate Configuration",
+            "type": "shell",
+            "command": "python",
+            "args": ["scripts/run_analysis.py", "--validate-config"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/src"
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Validate analysis configuration files"
+        },
+        {
+            "label": "PowerFactory: Dry Run",
+            "type": "shell",
+            "command": "python",
+            "args": ["scripts/run_analysis.py", "--dry-run", "--verbose"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/src"
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Validate setup without running actual analysis"
+        },
+        {
+            "label": "PowerFactory: Glenrothes Analysis",
+            "type": "shell",
+            "command": "python",
+            "args": ["scripts/run_glenrothes_analysis.py", "--verbose"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            },
+            "options": {
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/src"
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Run Glenrothes-specific network analysis"
+        },
+        {
+            "label": "Test: Run All Tests",
+            "type": "shell",
+            "command": "python",
+            "args": ["tests/test_runner.py"],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/src",
+                    "TESTING": "true"
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Run complete test suite"
+        },
+        {
+            "label": "Test: Run with Pytest",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "pytest", "tests/", "-v", "--tb=short"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/src",
+                    "TESTING": "true"
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Run tests using pytest with verbose output"
+        },
+        {
+            "label": "Test: Coverage Report",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "pytest", "tests/", "--cov=src", "--cov-report=html", "--cov-report=term"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/src",
+                    "TESTING": "true"
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Generate test coverage report"
+        },
+        {
+            "label": "Code: Format with Black",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "black", "src/", "scripts/", "tests/", "--line-length", "88"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Format code using Black formatter"
+        },
+        {
+            "label": "Code: Sort Imports",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "isort", "src/", "scripts/", "tests/", "--profile", "black"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Sort imports using isort"
+        },
+        {
+            "label": "Code: Lint with Flake8",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "flake8", "src/", "scripts/", "tests/", "--max-line-length=88", "--extend-ignore=E203,W503"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(.*)$",
+                            "file": 1,
+                            "line": 2,
+                            "column": 3,
+                            "severity": 4,
+                            "message": 5
+                        }
+                    ]
+                }
+            ],
+            "detail": "Run Flake8 linting on source code"
+        },
+        {
+            "label": "Code: Type Check with MyPy",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "mypy", "src/", "--ignore-missing-imports", "--python-version", "3.11"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": "^(.*):(\\d+):(\\d+):\\s+(error|warning|note):\\s+(.*)$",
+                            "file": 1,
+                            "line": 2,
+                            "column": 3,
+                            "severity": 4,
+                            "message": 5
+                        }
+                    ]
+                }
+            ],
+            "detail": "Run MyPy type checking"
+        },
+        {
+            "label": "Documentation: Generate Docs",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "sphinx.cmd.build", "-b", "html", "docs/", "docs/_build/html"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Generate Sphinx documentation",
+            "dependsOn": "PowerFactory: Install Dev Dependencies"
+        },
+        {
+            "label": "Clean: Remove Cache Files",
+            "type": "shell",
+            "command": "python",
+            "args": ["-c", "import shutil, pathlib; [shutil.rmtree(p) for p in pathlib.Path('.').rglob('__pycache__')] + [p.unlink() for p in pathlib.Path('.').rglob('*.pyc')]"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Remove Python cache files and directories"
+        },
+        {
+            "label": "Clean: Remove Output Files",
+            "type": "shell",
+            "command": "python",
+            "args": ["-c", "import shutil, pathlib; [shutil.rmtree(p) for p in ['output/reports', 'output/logs', 'output/data'] if pathlib.Path(p).exists()]"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Remove analysis output files"
+        },
+        {
+            "label": "Setup: Create Virtual Environment",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "venv", "venv"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Create Python virtual environment"
+        },
+        {
+            "label": "Setup: Check Python Version",
+            "type": "shell",
+            "command": "python",
+            "args": ["--version"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Check Python version (should be 3.11.x for PowerFactory compatibility)"
+        },
+        {
+            "label": "Setup: Verify PowerFactory Paths",
+            "type": "shell",
+            "command": "python",
+            "args": ["-c", "import sys; [print(f'Path: {p}') for p in sys.path if 'PowerFactory' in p or 'DIgSILENT' in p]; print('\\nPython version:', sys.version)"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "detail": "Verify PowerFactory Python paths are available"
+        }
+    ]
+}

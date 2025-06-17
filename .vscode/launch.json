@@ -1,0 +1,446 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "PowerFactory: Main Analysis",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/run_analysis.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_DEBUG": "true"
+            },
+            "args": [
+                "--log-level", "DEBUG",
+                "--verbose"
+            ],
+            "jinja": true,
+            "justMyCode": false,
+            "stopOnEntry": false,
+            "presentation": {
+                "hidden": false,
+                "group": "powerfactory",
+                "order": 1
+            }
+        },
+        {
+            "name": "PowerFactory: Base Case Only",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/run_analysis.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_DEBUG": "true"
+            },
+            "args": [
+                "--base-case-only",
+                "--log-level", "INFO",
+                "--verbose"
+            ],
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "powerfactory",
+                "order": 2
+            }
+        },
+        {
+            "name": "PowerFactory: Custom Config",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/run_analysis.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_DEBUG": "true"
+            },
+            "args": [
+                "--config", "${workspaceFolder}/config/analysis_config.yaml",
+                "--log-level", "DEBUG"
+            ],
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "powerfactory",
+                "order": 3
+            }
+        },
+        {
+            "name": "PowerFactory: Glenrothes Analysis",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/run_glenrothes_analysis.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_DEBUG": "true"
+            },
+            "args": [
+                "--verbose",
+                "--log-level", "DEBUG"
+            ],
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "powerfactory",
+                "order": 4
+            }
+        },
+        {
+            "name": "PowerFactory: Batch Analysis",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/batch_analysis.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_DEBUG": "true"
+            },
+            "args": [
+                "--verbose"
+            ],
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "powerfactory",
+                "order": 5
+            }
+        },
+        {
+            "name": "PowerFactory: Validate Config Only",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/run_analysis.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "args": [
+                "--validate-config",
+                "--log-level", "INFO"
+            ],
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "validation",
+                "order": 1
+            }
+        },
+        {
+            "name": "PowerFactory: Dry Run",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/run_analysis.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "args": [
+                "--dry-run",
+                "--verbose"
+            ],
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "validation",
+                "order": 2
+            }
+        },
+        {
+            "name": "Test: Run All Tests",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/test_runner.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "TESTING": "true"
+            },
+            "args": [],
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "testing",
+                "order": 1
+            }
+        },
+        {
+            "name": "Test: Core Components",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "tests/test_core.py",
+                "-v",
+                "-s",
+                "--tb=short"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "TESTING": "true"
+            },
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "testing",
+                "order": 2
+            }
+        },
+        {
+            "name": "Test: Analyzers",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "tests/test_analyzers.py",
+                "-v",
+                "-s",
+                "--tb=short"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "TESTING": "true"
+            },
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "testing",
+                "order": 3
+            }
+        },
+        {
+            "name": "Test: Models",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "tests/test_models.py",
+                "-v",
+                "-s",
+                "--tb=short"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "TESTING": "true"
+            },
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "testing",
+                "order": 4
+            }
+        },
+        {
+            "name": "Test: Utils",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "tests/test_utils.py",
+                "-v",
+                "-s",
+                "--tb=short"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "TESTING": "true"
+            },
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "testing",
+                "order": 5
+            }
+        },
+        {
+            "name": "Test: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "${file}",
+                "-v",
+                "-s",
+                "--tb=short"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "TESTING": "true"
+            },
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "testing",
+                "order": 6
+            }
+        },
+        {
+            "name": "Test: With Coverage",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "tests/",
+                "-v",
+                "--cov=src",
+                "--cov-report=html",
+                "--cov-report=term"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "TESTING": "true"
+            },
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "testing",
+                "order": 7
+            }
+        },
+        {
+            "name": "Debug: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_DEBUG": "true"
+            },
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "debug",
+                "order": 1
+            }
+        },
+        {
+            "name": "Debug: With Arguments",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_DEBUG": "true"
+            },
+            "args": [
+                // Add your custom arguments here
+            ],
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "debug",
+                "order": 2
+            }
+        },
+        {
+            "name": "Debug: PowerFactory Interface",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/core/powerfactory_interface.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_DEBUG": "true"
+            },
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "debug",
+                "order": 3
+            }
+        },
+        {
+            "name": "Debug: Network Analyzer",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/core/network_analyzer.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_DEBUG": "true"
+            },
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "debug",
+                "order": 4
+            }
+        },
+        {
+            "name": "Benchmark: Performance Test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/run_analysis.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "POWERFACTORY_BENCHMARK": "true"
+            },
+            "args": [
+                "--max-contingencies", "10",
+                "--log-level", "INFO"
+            ],
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "benchmark",
+                "order": 1
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Full Analysis Suite",
+            "configurations": [
+                "PowerFactory: Validate Config Only",
+                "PowerFactory: Main Analysis"
+            ],
+            "presentation": {
+                "hidden": false,
+                "group": "compound",
+                "order": 1
+            }
+        },
+        {
+            "name": "Test and Validate",
+            "configurations": [
+                "Test: Run All Tests",
+                "PowerFactory: Dry Run"
+            ],
+            "presentation": {
+                "hidden": false,
+                "group": "compound",
+                "order": 2
+            }
+        }
+    ]
+}
