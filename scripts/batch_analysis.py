@@ -213,7 +213,14 @@ class BatchAnalysisManager:
             
             # Initialize analyzer with study config
             analyzer = NetworkAnalyzer()
-            analyzer.config = study_config
+            # Merge study config with analyzer's existing config
+            if hasattr(analyzer, '_merge_config'):
+                analyzer._merge_config(study_config)
+            else:
+                # Fallback: create new analyzer with merged config
+                merged_config = analyzer.config.copy() if analyzer.config else {}
+                merged_config.update(study_config)
+                analyzer.config = merged_config
             
             # Set PowerFactory study if specified
             if 'path' in study and study['path'].endswith('.pfd'):
@@ -403,7 +410,9 @@ class BatchAnalysisManager:
             
             # Create workbook
             workbook = openpyxl.Workbook()
-            workbook.remove(workbook.active)
+            # Remove default sheet
+            if workbook.worksheets:
+                workbook.remove(workbook.worksheets[0])
             
             # Summary sheet
             summary_sheet = workbook.create_sheet("Study Comparison")

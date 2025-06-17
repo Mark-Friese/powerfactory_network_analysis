@@ -440,7 +440,10 @@ class NetworkAnalyzer:
             
             # Validate analysis options
             options = self.config.get('analysis', {}).get('options', {})
-            if not options.get('run_base_case') and not options.get('run_contingency'):
+            run_base_case = options.get('run_base_case', True)  # Default to True
+            run_contingency = options.get('run_contingency', True)  # Default to True
+            
+            if not run_base_case and not run_contingency:
                 self.logger.error("At least one of base case or contingency analysis must be enabled")
                 return False
             

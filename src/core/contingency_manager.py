@@ -82,7 +82,7 @@ class ContingencyManager:
         self.logger.info(f"Prepared {len(contingency_elements)} elements for contingency analysis")
         return contingency_elements
     
-    def apply_contingency(self, element: NetworkElement) -> bool:
+    def apply_contingency_element(self, element: NetworkElement) -> bool:
         """
         Apply contingency (take element out of service).
         
@@ -299,6 +299,126 @@ class ContingencyManager:
             if state.contingency_status == ContingencyStatus.FAILED:
                 failed.append((name, state.error_message or "Unknown error"))
         return failed
+    
+    def get_n1_contingencies(self) -> List[str]:
+        """
+        Get list of N-1 contingency scenarios.
+        
+        Returns:
+            List of contingency element names
+        """
+        if not self.pf_interface.is_connected:
+            self.logger.error("PowerFactory not connected")
+            return []
+        
+        contingency_elements = []
+        
+        # Get thermal elements for contingency analysis
+        thermal_classes = ['*.ElmLne', '*.ElmTr2', '*.ElmTr3', '*.ElmCoup']
+        
+        for pf_class in thermal_classes:
+            elements = self.pf_interface.get_calc_relevant_objects(pf_class)
+            for element in elements:
+                # Check if element is in service
+                out_of_service = self.pf_interface.get_element_attribute(element, 'outserv')
+                if not out_of_service:  # Element is in service
+                    element_name = self.pf_interface.get_element_attribute(element, 'loc_name')
+                    if element_name:
+                        contingency_elements.append(element_name)
+        
+        self.logger.info(f"Found {len(contingency_elements)} elements for N-1 contingency analysis")
+        return contingency_elements
+    
+    def apply_contingency(self, contingency_name: str) -> bool:
+        """
+        Apply contingency by element name.
+        
+        Args:
+            contingency_name: Name of element to take out of service
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            # Find element by name
+            thermal_classes = ['*.ElmLne', '*.ElmTr2', '*.ElmTr3', '*.ElmCoup']
+            target_element = None
+            
+            for pf_class in thermal_classes:
+                elements = self.pf_interface.get_calc_relevant_objects(pf_class)
+                for element in elements:
+                    element_name = self.pf_interface.get_element_attribute(element, 'loc_name')
+                    if element_name == contingency_name:
+                        target_element = element
+                        break
+                if target_element:
+                    break
+            
+            if not target_element:
+                self.logger.error(f"Contingency element not found: {contingency_name}")
+                return False
+            
+            # Store original state
+            original_status = not bool(self.pf_interface.get_element_attribute(target_element, 'outserv'))
+            
+            # Apply outage
+            success = self.pf_interface.set_element_attribute(target_element, 'outserv', 1)
+            
+            if success:
+                self._active_contingency = contingency_name
+                self.logger.debug(f"Applied contingency: {contingency_name}")
+                return True
+            else:
+                self.logger.error(f"Failed to apply contingency: {contingency_name}")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Error applying contingency {contingency_name}: {e}")
+            return False
+    
+    def restore_system(self) -> bool:
+        """
+        Restore system from current contingency.
+        
+        Returns:
+            True if successful, False otherwise
+        """
+        if not self._active_contingency:
+            return True  # No active contingency to restore
+        
+        try:
+            # Find element by name
+            thermal_classes = ['*.ElmLne', '*.ElmTr2', '*.ElmTr3', '*.ElmCoup']
+            target_element = None
+            
+            for pf_class in thermal_classes:
+                elements = self.pf_interface.get_calc_relevant_objects(pf_class)
+                for element in elements:
+                    element_name = self.pf_interface.get_element_attribute(element, 'loc_name')
+                    if element_name == self._active_contingency:
+                        target_element = element
+                        break
+                if target_element:
+                    break
+            
+            if not target_element:
+                self.logger.error(f"Cannot find element to restore: {self._active_contingency}")
+                return False
+            
+            # Restore element (put back in service)
+            success = self.pf_interface.set_element_attribute(target_element, 'outserv', 0)
+            
+            if success:
+                self.logger.debug(f"Restored contingency: {self._active_contingency}")
+                self._active_contingency = None
+                return True
+            else:
+                self.logger.error(f"Failed to restore contingency: {self._active_contingency}")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Error restoring contingency {self._active_contingency}: {e}")
+            return False
     
     def clear_contingency_states(self) -> None:
         """Clear all contingency state tracking."""

@@ -25,6 +25,7 @@ Examples:
 import argparse
 import sys
 import traceback
+import logging
 from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, Any
@@ -43,7 +44,7 @@ from src.utils.file_handler import FileHandler
 from src.utils.validation import InputValidator
 
 
-def setup_logging(log_level: str = "INFO", log_file: Optional[str] = None) -> AnalysisLogger:
+def setup_logging(log_level: str = "INFO", log_file: Optional[str] = None) -> logging.Logger:
     """Setup logging configuration."""
     logger = get_logger("run_analysis")
     
@@ -56,7 +57,7 @@ def setup_logging(log_level: str = "INFO", log_file: Optional[str] = None) -> An
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         )
         file_handler.setFormatter(formatter)
-        logger.logger.addHandler(file_handler)
+        logger.addHandler(file_handler)
     
     return logger
 

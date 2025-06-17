@@ -127,8 +127,12 @@ class ThermalAnalyzer(BaseAnalyzer):
             List of analysis results for specified element type
         """
         filtered_elements = self.filter_by_element_type(elements, element_type)
-        return [self.analyze_element(element, contingency) for element in filtered_elements 
-                if self.analyze_element(element, contingency) is not None]
+        results = []
+        for element in filtered_elements:
+            result = self.analyze_element(element, contingency)
+            if result is not None:
+                results.append(result)
+        return results
     
     def get_overloaded_elements(self, results: List[AnalysisResult]) -> List[AnalysisResult]:
         """
@@ -187,7 +191,7 @@ class ThermalAnalyzer(BaseAnalyzer):
         return [result for result in results if result.value >= threshold]
     
     def get_loading_distribution(self, results: List[AnalysisResult], 
-                                num_bins: int = 10) -> Dict[str, List[int]]:
+                                num_bins: int = 10) -> Dict[str, Any]:
         """
         Get distribution of loading levels.
         
@@ -204,6 +208,14 @@ class ThermalAnalyzer(BaseAnalyzer):
         loadings = [r.value for r in results]
         min_loading = min(loadings)
         max_loading = max(loadings)
+        
+        # Handle case where all loadings are the same
+        if min_loading == max_loading:
+            return {
+                'bins': [min_loading, min_loading + 1],
+                'counts': [len(results)],
+                'total_elements': len(results)
+            }
         
         # Create bins
         bin_width = (max_loading - min_loading) / num_bins

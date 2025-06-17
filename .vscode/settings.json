@@ -154,15 +154,7 @@
         "**/.venv",
         "**/output"
     ],
-    
-    // PowerFactory specific settings
-    "workbench.colorCustomizations": {
-        "tab.activeBorderTop": "#FF6B35",
-        "statusBar.background": "#FF6B35",
-        "statusBar.foreground": "#FFFFFF",
-        "activityBar.activeBorder": "#FF6B35"
-    },
-    
+
     // Search settings
     "search.exclude": {
         "**/node_modules": true,
@@ -223,7 +215,7 @@
     // Auto-completion settings
     "editor.suggest.localityBonus": true,
     "editor.suggest.shareSuggestSelections": true,
-    "editor.wordBasedSuggestions": false,
+    "editor.wordBasedSuggestions": "off",
     
     // Code folding
     "editor.foldingStrategy": "indentation",

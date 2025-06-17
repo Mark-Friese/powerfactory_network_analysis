@@ -161,8 +161,12 @@ class VoltageAnalyzer(BaseAnalyzer):
             List of analysis results for specified region
         """
         filtered_elements = self.filter_by_region(elements, region)
-        return [self.analyze_element(element, contingency) for element in filtered_elements 
-                if self.analyze_element(element, contingency) is not None]
+        results = []
+        for element in filtered_elements:
+            result = self.analyze_element(element, contingency)
+            if result is not None:
+                results.append(result)
+        return results
     
     def analyze_by_voltage_level(self, elements: List[NetworkElement], voltage_level: float,
                                 contingency: Optional[str] = None) -> List[AnalysisResult]:
@@ -178,8 +182,12 @@ class VoltageAnalyzer(BaseAnalyzer):
             List of analysis results for specified voltage level
         """
         filtered_elements = self.filter_by_voltage_level(elements, voltage_level)
-        return [self.analyze_element(element, contingency) for element in filtered_elements 
-                if self.analyze_element(element, contingency) is not None]
+        results = []
+        for element in filtered_elements:
+            result = self.analyze_element(element, contingency)
+            if result is not None:
+                results.append(result)
+        return results
     
     def get_voltage_violations(self, results: List[AnalysisResult]) -> List[AnalysisResult]:
         """
@@ -316,7 +324,7 @@ class VoltageAnalyzer(BaseAnalyzer):
         
         return critical_buses
     
-    def get_voltage_profile(self, results: List[AnalysisResult]) -> Dict[str, List[float]]:
+    def get_voltage_profile(self, results: List[AnalysisResult]) -> Dict[str, Any]:
         """
         Get voltage profile across the network.
         
@@ -327,7 +335,7 @@ class VoltageAnalyzer(BaseAnalyzer):
             Dictionary with voltage profile data
         """
         if not results:
-            return {'voltage_levels': [], 'voltages': [], 'bus_names': []}
+            return {'voltage_levels': [], 'voltages': [], 'bus_names': [], 'regions': []}
         
         # Sort by voltage level then by voltage value
         sorted_results = sorted(results, key=lambda r: (r.element.voltage_level, r.value))
