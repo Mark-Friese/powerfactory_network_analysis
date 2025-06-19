@@ -1,27 +1,14 @@
 {
-    // Python Configuration for PowerFactory (requires Python 3.11.x max)
-    "python.defaultInterpreterPath": "python",
+    // Python Configuration for PowerFactory
+    "python.defaultInterpreterPath": "C:\\Python311\\python.exe",
     "python.terminal.activateEnvironment": true,
-    "python.terminal.activateEnvInCurrentTerminal": true,
     
-    // Python interpreter search order (prioritize 3.11.9)
-    "python.interpreterPath": {
-        "windows": [
-            "C:\\Python311\\python.exe",
-            "C:\\Program Files\\Python311\\python.exe",
-            "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
-            "${workspaceFolder}\\venv\\Scripts\\python.exe",
-            "${workspaceFolder}\\.venv\\Scripts\\python.exe",
-            "python"
-        ]
-    },
-    
-    // PowerFactory specific environment
+    // PowerFactory specific Python paths
     "python.envFile": "${workspaceFolder}/.env",
     "python.analysis.extraPaths": [
         "${workspaceFolder}/src",
         "${workspaceFolder}/src/core",
-        "${workspaceFolder}/src/analyzers",
+        "${workspaceFolder}/src/analyzers", 
         "${workspaceFolder}/src/models",
         "${workspaceFolder}/src/reports",
         "${workspaceFolder}/src/utils",
@@ -30,221 +17,60 @@
         "C:\\Program Files\\DIgSILENT\\PowerFactory 2023\\Python\\3.9"
     ],
     
-    // Language Server Configuration (Pylance)
-    "python.languageServer": "Pylance",
-    "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.autoImportCompletions": true,
-    "python.analysis.completeFunctionParens": true,
-    "python.analysis.autoSearchPaths": true,
-    "python.analysis.diagnosticMode": "workspace",
-    "python.analysis.include": [
-        "src/**",
-        "scripts/**",
-        "tests/**"
-    ],
-    "python.analysis.exclude": [
-        "**/node_modules",
-        "**/__pycache__",
-        "**/venv",
-        "**/.venv",
-        "**/output"
-    ],
-    
-    // Reduce warning noise while keeping important errors
+    // Reduce warning noise (keep errors visible)
     "python.analysis.diagnosticSeverityOverrides": {
-        // Reduce noise from common but non-critical warnings
         "reportMissingImports": "warning",
         "reportMissingTypeStubs": "information",
         "reportUnknownMemberType": "information",
-        "reportUnknownParameterType": "information", 
-        "reportUnknownVariableType": "information",
-        "reportUnknownArgumentType": "information",
         "reportGeneralTypeIssues": "information",
-        "reportOptionalSubscript": "information",
-        "reportOptionalMemberAccess": "information",
-        "reportOptionalCall": "information",
-        "reportOptionalIterable": "information",
-        "reportOptionalContextManager": "information",
-        "reportOptionalOperand": "information",
-        "reportImplicitStringConcatenation": "information",
         "reportUnusedImport": "information",
-        "reportUnusedClass": "information",
-        "reportUnusedFunction": "information",
-        "reportUnusedVariable": "information",
-        // Keep important errors as errors
-        "reportUndefinedVariable": "error",
-        "reportAssertAlwaysTrue": "warning",
-        "reportInvalidStringEscapeSequence": "error",
-        "reportInvalidTypeVarUse": "error",
-        "reportSelfClsParameterName": "warning"
+        "reportUnusedVariable": "information"
     },
     
-    // Modern formatting configuration using Black Formatter extension
+    // Modern formatting (requires ms-python.black-formatter extension)
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
-            "source.organizeImports": "explicit",
-            "source.fixAll": "explicit"
+            "source.organizeImports": "explicit"
         }
     },
     
-    // Black Formatter configuration (requires ms-python.black-formatter extension)
+    // Black formatter settings
     "black-formatter.args": ["--line-length", "88"],
     
-    // Import sorting with isort (requires ms-python.isort extension)
-    "isort.args": [
-        "--profile", "black",
-        "--line-length", "88"
-    ],
-    
-    // Editor settings optimized for Python development
+    // Editor preferences
     "editor.rulers": [88],
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
-    "editor.detectIndentation": false,
-    "editor.wordWrap": "off",
-    "editor.renderWhitespace": "boundary",
-    "editor.suggest.localityBonus": true,
-    "editor.suggest.shareSuggestSelections": true,
-    "editor.wordBasedSuggestions": "off",
     
-    // Code folding
-    "editor.foldingStrategy": "indentation",
-    "editor.showFoldingControls": "always",
-    
-    // Minimap settings
-    "editor.minimap.enabled": true,
-    "editor.minimap.showSlider": "always",
-    
-    // File associations for PowerFactory project
+    // PowerFactory file associations
     "files.associations": {
-        "*.csv": "csv",
-        "*.yaml": "yaml",
-        "*.yml": "yaml", 
-        "*.log": "log",
         "*.pfd": "text",
         "*.env": "properties",
-        ".env.*": "properties",
-        "requirements*.txt": "pip-requirements"
+        ".env.*": "properties"
     },
     
-    // File watching exclusions (performance optimization)
+    // Performance: exclude unnecessary file watching
     "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
         "**/venv/**": true,
         "**/.venv/**": true,
         "**/output/**": true,
         "**/logs/**": true,
         "**/__pycache__/**": true,
-        "**/*.pyc": true,
-        "**/*.pyo": true,
-        "**/.pytest_cache/**": true,
-        "**/.coverage": true,
-        "**/htmlcov/**": true
+        "**/*.pyc": true
     },
     
-    // PowerFactory project specific exclusions
+    // PowerFactory project structure
     "files.exclude": {
         "**/__pycache__": true,
         "**/*.pyc": true,
-        "**/.pytest_cache": true,
         "**/output/logs/*.log": false,
         "**/output/reports/*.xlsx": false,
         "**/output/reports/*.csv": false
     },
     
-    // Search settings
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/venv": true,
-        "**/.venv": true,
-        "**/output/**": true,
-        "**/logs/**": true,
-        "**/__pycache__": true,
-        "**/*.pyc": true,
-        "**/.pytest_cache": true,
-        "**/htmlcov": true
-    },
-    
-    // Testing configuration (requires pytest extension or built-in testing)
+    // Testing
     "python.testing.pytestEnabled": true,
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestArgs": [
-        "tests",
-        "-v",
-        "--tb=short",
-        "--strict-markers"
-    ],
-    "python.testing.autoTestDiscoverOnSaveEnabled": true,
-    
-    // Git settings
-    "git.ignoreLimitWarning": true,
-    "git.autofetch": true,
-    
-    // Terminal settings
-    "terminal.integrated.defaultProfile.windows": "Command Prompt",
-    "terminal.integrated.cwd": "${workspaceFolder}",
-    
-    // PowerFactory specific terminal profiles
-    "terminal.integrated.profiles.windows": {
-        "Command Prompt": {
-            "path": "C:\\Windows\\System32\\cmd.exe",
-            "args": [],
-            "icon": "terminal-cmd"
-        },
-        "PowerShell": {
-            "source": "PowerShell", 
-            "icon": "terminal-powershell"
-        },
-        "PowerFactory Python": {
-            "path": "C:\\Windows\\System32\\cmd.exe",
-            "args": ["/k", "set PYTHONPATH=${workspaceFolder}\\src;%PYTHONPATH%"],
-            "icon": "symbol-misc"
-        }
-    },
-    
-    // Auto-save settings
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 10000,
-    
-    // File encoding settings
-    "files.encoding": "utf8",
-    "files.eol": "\\n",
-    
-    // Markdown settings for documentation
-    "markdown.preview.fontSize": 14,
-    "markdown.preview.lineHeight": 1.6,
-    
-    // YAML settings for configuration files
-    "yaml.schemas": {
-        "${workspaceFolder}/config/analysis_config.yaml": [
-            "/config/*.yaml",
-            "/config/*.yml"
-        ]
-    },
-    
-    // Error lens settings for better error visibility (if extension installed)
-    "errorLens.enabledDiagnosticLevels": [
-        "error",
-        "warning"
-    ],
-    "errorLens.excludeBySource": [
-        "cSpell"
-    ],
-    
-    // CSV settings for data analysis (if extension installed)
-    "csv-rainbow.enable": true,
-    "csv-rainbow.comment": "#",
-    
-    // Jupyter notebook settings (if extension installed)
-    "jupyter.askForKernelRestart": false,
-    "jupyter.interactiveWindow.creationMode": "perFile",
-    "notebook.cellToolbarLocation": {
-        "default": "right"
-    },
-    
-    // Python Environments extension settings (if installed)
-    "python-envs.terminal.autoActivationType": "command"
+    "python.testing.unittestEnabled": false
 }
