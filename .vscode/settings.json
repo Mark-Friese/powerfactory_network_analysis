@@ -1,11 +1,10 @@
 {
     // Python Configuration for PowerFactory (requires Python 3.11.x max)
     "python.defaultInterpreterPath": "python",
-    "python.pythonPath": "python",
     "python.terminal.activateEnvironment": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
     
-    // Specify Python interpreter search order (prioritize 3.11.9)
+    // Python interpreter search order (prioritize 3.11.9)
     "python.interpreterPath": {
         "windows": [
             "C:\\Python311\\python.exe",
@@ -31,38 +30,73 @@
         "C:\\Program Files\\DIgSILENT\\PowerFactory 2023\\Python\\3.9"
     ],
     
-    // Formatting and Linting
-    "python.formatting.provider": "black",
-    "python.formatting.blackArgs": ["--line-length", "88"],
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
-        "--max-line-length=88",
-        "--extend-ignore=E203,W503"
+    // Language Server Configuration (Pylance)
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.completeFunctionParens": true,
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.include": [
+        "src/**",
+        "scripts/**",
+        "tests/**"
     ],
-    "python.linting.mypyEnabled": true,
-    "python.linting.mypyArgs": [
-        "--ignore-missing-imports",
-        "--follow-imports=silent",
-        "--show-column-numbers",
-        "--strict-optional",
-        "--python-version=3.11"
+    "python.analysis.exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+        "**/venv",
+        "**/.venv",
+        "**/output"
     ],
     
-    // Import sorting
-    "python.sortImports.args": [
+    // Reduce warning noise while keeping important errors
+    "python.analysis.diagnosticSeverityOverrides": {
+        // Reduce noise from common but non-critical warnings
+        "reportMissingImports": "warning",
+        "reportMissingTypeStubs": "information",
+        "reportUnknownMemberType": "information",
+        "reportUnknownParameterType": "information", 
+        "reportUnknownVariableType": "information",
+        "reportUnknownArgumentType": "information",
+        "reportGeneralTypeIssues": "information",
+        "reportOptionalSubscript": "information",
+        "reportOptionalMemberAccess": "information",
+        "reportOptionalCall": "information",
+        "reportOptionalIterable": "information",
+        "reportOptionalContextManager": "information",
+        "reportOptionalOperand": "information",
+        "reportImplicitStringConcatenation": "information",
+        "reportUnusedImport": "information",
+        "reportUnusedClass": "information",
+        "reportUnusedFunction": "information",
+        "reportUnusedVariable": "information",
+        // Keep important errors as errors
+        "reportUndefinedVariable": "error",
+        "reportAssertAlwaysTrue": "warning",
+        "reportInvalidStringEscapeSequence": "error",
+        "reportInvalidTypeVarUse": "error",
+        "reportSelfClsParameterName": "warning"
+    },
+    
+    // Modern formatting configuration using Black Formatter extension
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll": "explicit"
+        }
+    },
+    
+    // Black Formatter configuration (requires ms-python.black-formatter extension)
+    "black-formatter.args": ["--line-length", "88"],
+    
+    // Import sorting with isort (requires ms-python.isort extension)
+    "isort.args": [
         "--profile", "black",
         "--line-length", "88"
     ],
-    
-    // Code formatting on save
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": false,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit",
-        "source.fixAll": "explicit"
-    },
     
     // Editor settings optimized for Python development
     "editor.rulers": [88],
@@ -71,12 +105,23 @@
     "editor.detectIndentation": false,
     "editor.wordWrap": "off",
     "editor.renderWhitespace": "boundary",
+    "editor.suggest.localityBonus": true,
+    "editor.suggest.shareSuggestSelections": true,
+    "editor.wordBasedSuggestions": "off",
+    
+    // Code folding
+    "editor.foldingStrategy": "indentation",
+    "editor.showFoldingControls": "always",
+    
+    // Minimap settings
+    "editor.minimap.enabled": true,
+    "editor.minimap.showSlider": "always",
     
     // File associations for PowerFactory project
     "files.associations": {
         "*.csv": "csv",
         "*.yaml": "yaml",
-        "*.yml": "yaml",
+        "*.yml": "yaml", 
         "*.log": "log",
         "*.pfd": "text",
         "*.env": "properties",
@@ -84,7 +129,7 @@
         "requirements*.txt": "pip-requirements"
     },
     
-    // File watching exclusions
+    // File watching exclusions (performance optimization)
     "files.watcherExclude": {
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
@@ -100,7 +145,30 @@
         "**/htmlcov/**": true
     },
     
-    // Testing configuration
+    // PowerFactory project specific exclusions
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+        "**/.pytest_cache": true,
+        "**/output/logs/*.log": false,
+        "**/output/reports/*.xlsx": false,
+        "**/output/reports/*.csv": false
+    },
+    
+    // Search settings
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/venv": true,
+        "**/.venv": true,
+        "**/output/**": true,
+        "**/logs/**": true,
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+        "**/.pytest_cache": true,
+        "**/htmlcov": true
+    },
+    
+    // Testing configuration (requires pytest extension or built-in testing)
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
     "python.testing.pytestArgs": [
@@ -127,7 +195,7 @@
             "icon": "terminal-cmd"
         },
         "PowerShell": {
-            "source": "PowerShell",
+            "source": "PowerShell", 
             "icon": "terminal-powershell"
         },
         "PowerFactory Python": {
@@ -137,40 +205,13 @@
         }
     },
     
-    // IntelliSense settings
-    "python.analysis.autoImportCompletions": true,
-    "python.analysis.completeFunctionParens": true,
-    "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.autoSearchPaths": true,
-    "python.analysis.include": [
-        "src/**",
-        "scripts/**",
-        "tests/**"
-    ],
-    "python.analysis.exclude": [
-        "**/node_modules",
-        "**/__pycache__",
-        "**/venv",
-        "**/.venv",
-        "**/output"
-    ],
-
-    // Search settings
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/venv": true,
-        "**/.venv": true,
-        "**/output/**": true,
-        "**/logs/**": true,
-        "**/__pycache__": true,
-        "**/*.pyc": true,
-        "**/.pytest_cache": true,
-        "**/htmlcov": true
-    },
-    
     // Auto-save settings
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 10000,
+    
+    // File encoding settings
+    "files.encoding": "utf8",
+    "files.eol": "\\n",
     
     // Markdown settings for documentation
     "markdown.preview.fontSize": 14,
@@ -184,7 +225,7 @@
         ]
     },
     
-    // Error lens settings for better error visibility
+    // Error lens settings for better error visibility (if extension installed)
     "errorLens.enabledDiagnosticLevels": [
         "error",
         "warning"
@@ -193,45 +234,17 @@
         "cSpell"
     ],
     
-    // CSV settings for data analysis
+    // CSV settings for data analysis (if extension installed)
     "csv-rainbow.enable": true,
     "csv-rainbow.comment": "#",
     
-    // Jupyter notebook settings
+    // Jupyter notebook settings (if extension installed)
     "jupyter.askForKernelRestart": false,
     "jupyter.interactiveWindow.creationMode": "perFile",
     "notebook.cellToolbarLocation": {
         "default": "right"
     },
     
-    // File encoding settings
-    "files.encoding": "utf8",
-    "files.eol": "\\n",
-    
-    // PowerFactory Python version validation
-    "python.analysis.diagnosticMode": "workspace",
-    "python.languageServer": "Pylance",
-    
-    // Auto-completion settings
-    "editor.suggest.localityBonus": true,
-    "editor.suggest.shareSuggestSelections": true,
-    "editor.wordBasedSuggestions": "off",
-    
-    // Code folding
-    "editor.foldingStrategy": "indentation",
-    "editor.showFoldingControls": "always",
-    
-    // Minimap settings
-    "editor.minimap.enabled": true,
-    "editor.minimap.showSlider": "always",
-    
-    // PowerFactory project specific exclusions
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/*.pyc": true,
-        "**/.pytest_cache": true,
-        "**/output/logs/*.log": false,
-        "**/output/reports/*.xlsx": false,
-        "**/output/reports/*.csv": false
-    }
+    // Python Environments extension settings (if installed)
+    "python-envs.terminal.autoActivationType": "command"
 }
