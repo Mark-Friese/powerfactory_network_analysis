@@ -28,10 +28,10 @@ from typing import List, Dict, Any, Optional, Tuple
 import time
 import json
 
-# Add src to Python path
+# Add project root to Python path for src imports
 current_dir = Path(__file__).parent
-src_dir = current_dir.parent / "src"
-sys.path.insert(0, str(src_dir))
+project_root = current_dir.parent
+sys.path.insert(0, str(project_root))
 
 from src.core.network_analyzer import NetworkAnalyzer
 from src.core.results_manager import ResultsManager

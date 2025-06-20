@@ -30,10 +30,10 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict, Any
 
-# Add src to Python path
+# Add project root to Python path for src imports
 current_dir = Path(__file__).parent
-src_dir = current_dir.parent / "src"
-sys.path.insert(0, str(src_dir))
+project_root = current_dir.parent
+sys.path.insert(0, str(project_root))
 
 from src.core.network_analyzer import NetworkAnalyzer
 from src.core.results_manager import ResultsManager
@@ -152,6 +152,13 @@ Examples:
         help="Validate setup without running analysis"
     )
     
+    # PowerFactory options
+    parser.add_argument(
+        "--user-id", "-u",
+        type=str,
+        help="PowerFactory user ID for authentication"
+    )
+    
     # Other options
     parser.add_argument(
         "--verbose", "-v",
@@ -261,6 +268,12 @@ def run_analysis(config: Dict[str, Any], args: argparse.Namespace,
         analyzer = NetworkAnalyzer()
         analyzer.config = config
         
+        # Get user ID from command line or config
+        user_id = args.user_id or config.get('connection', {}).get('user_id')
+        if user_id:
+            analyzer.pf_interface.set_user_id(user_id)
+            logger.info(f"PowerFactory user ID configured: {user_id}")
+        
         # Validate analyzer setup
         if not analyzer._validate_analysis_configuration():
             logger.error("Analysis configuration validation failed")
@@ -271,8 +284,8 @@ def run_analysis(config: Dict[str, Any], args: argparse.Namespace,
             logger.info("Dry run completed successfully")
             return {"dry_run": True}
         
-        # Connect to PowerFactory
-        if not analyzer.connect_to_powerfactory():
+        # Connect to PowerFactory with user authentication
+        if not analyzer.pf_interface.connect(user_id):
             logger.error("Failed to connect to PowerFactory")
             return None
         

@@ -48,6 +48,7 @@ class PowerFactoryInterface:
             self.logger = get_logger(__name__)
             self._initialized = True
             self._connected = False
+            self._user_id: Optional[str] = None
             
             # Log PowerFactory version information
             self.logger.info(f"PowerFactory Interface initialized for version: {POWERFACTORY_VERSION}")
@@ -57,26 +58,49 @@ class PowerFactoryInterface:
                 self.logger.error("PowerFactory module not available")
                 raise ImportError("PowerFactory module not found")
     
-    def connect(self) -> bool:
+    def connect(self, user_id: Optional[str] = None) -> bool:
         """
         Connect to PowerFactory application.
+        
+        Args:
+            user_id: PowerFactory user ID for login (optional)
         
         Returns:
             True if connection successful, False otherwise
         """
         try:
             if not self._connected:
-                self._app = pf.GetApplication()
-                if self._app is None:
-                    # Try alternative connection method
+                # Store user ID for tracking
+                if user_id:
+                    self._user_id = user_id
+                
+                # Try connection with user authentication first (recommended approach)
+                if user_id:
                     try:
-                        self._app = pf.GetApplicationExt()
-                    except:
-                        pass
-                    
-                    if self._app is None:
-                        self.logger.error("Failed to get PowerFactory application. Ensure PowerFactory is running.")
+                        self._app = pf.GetApplicationExt(user_id)
+                        if self._app is not None:
+                            self.logger.info(f"Connected to PowerFactory with user authentication: {user_id}")
+                        else:
+                            self.logger.error(f"Failed to authenticate user: {user_id}")
+                            return False
+                    except Exception as e:
+                        self.logger.error(f"Authentication failed for user {user_id}: {e}")
                         return False
+                else:
+                    # Try without authentication
+                    self._app = pf.GetApplication()
+                    if self._app is None:
+                        # Try alternative connection method
+                        try:
+                            self._app = pf.GetApplicationExt()
+                        except:
+                            pass
+                        
+                        if self._app is None:
+                            self.logger.error("Failed to get PowerFactory application. Ensure PowerFactory is running.")
+                            return False
+                    
+                    self.logger.info("Connected to PowerFactory without user authentication")
                 
                 # Clear output window safely
                 try:
@@ -85,14 +109,34 @@ class PowerFactoryInterface:
                     self.logger.debug(f"Could not clear output window: {e}")
                 
                 self._connected = True
-                self.logger.info("Connected to PowerFactory successfully")
-            
+                
             return True
             
         except Exception as e:
             self.logger.error(f"Failed to connect to PowerFactory: {e}")
             return False
-    
+
+
+
+    def set_user_id(self, user_id: str) -> None:
+        """
+        Set the user ID for future connections.
+        
+        Args:
+            user_id: PowerFactory user ID
+        """
+        self._user_id = user_id
+        self.logger.info(f"User ID set to: {user_id}")
+
+    def get_current_user(self) -> Optional[str]:
+        """
+        Get the current logged-in user ID.
+        
+        Returns:
+            Current user ID or None if not set
+        """
+        return self._user_id
+
     def disconnect(self) -> None:
         """Disconnect from PowerFactory application."""
         self._app = None
@@ -257,9 +301,8 @@ class PowerFactoryInterface:
                 return False
             
             # Test object retrieval
-            test_objects = self.get_calc_relevant_objects('*')
-            if not test_objects:
-                self.logger.warning("No calculation relevant objects found")
+            test_objects = self.get_calc_relevant_objects('*.ElmTerm')
+            self.logger.debug(f"Found {len(test_objects)} terminal objects during validation")
             
             return True
             
@@ -269,25 +312,27 @@ class PowerFactoryInterface:
     
     def get_network_statistics(self) -> Dict[str, int]:
         """
-        Get basic network statistics.
+        Get basic network statistics for validation.
         
         Returns:
-            Dictionary with counts of different element types
+            Dictionary with counts of major element types
         """
         stats = {
             'lines': 0,
             'transformers': 0,
-            'busbars': 0,
+            'terminals': 0,
             'loads': 0,
             'generators': 0
         }
         
         try:
-            stats['lines'] = len(self.get_calc_relevant_objects('*.ElmLne'))
-            stats['transformers'] = len(self.get_calc_relevant_objects('*.ElmTr2'))
-            stats['busbars'] = len(self.get_calc_relevant_objects('*.ElmTerm'))
-            stats['loads'] = len(self.get_calc_relevant_objects('*.ElmLod'))
-            stats['generators'] = len(self.get_calc_relevant_objects('*.ElmSym'))
+            if self.is_connected:
+                stats['lines'] = len(self.get_calc_relevant_objects('*.ElmLne'))
+                stats['transformers'] = len(self.get_calc_relevant_objects('*.ElmTr*'))
+                stats['terminals'] = len(self.get_calc_relevant_objects('*.ElmTerm'))
+                stats['loads'] = len(self.get_calc_relevant_objects('*.ElmLod'))
+                stats['generators'] = len(self.get_calc_relevant_objects('*.ElmSym'))
+                
         except Exception as e:
             self.logger.error(f"Error getting network statistics: {e}")
         

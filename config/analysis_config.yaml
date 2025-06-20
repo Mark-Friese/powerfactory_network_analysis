@@ -1,3 +1,8 @@
+# PowerFactory connection settings
+connection:
+  user_id: ""  # Enter your PowerFactory user ID here (e.g., "john.doe")
+  # Leave empty if PowerFactory doesn't require user authentication
+
 analysis:
   # Thermal loading limits (%)
   thermal_limits:
