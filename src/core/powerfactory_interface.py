@@ -4,23 +4,83 @@ PowerFactory interface module for managing PowerFactory application connections.
 
 import os
 import logging
+import sys
 from typing import Optional, List, Dict, Any
 from pathlib import Path
 
-# Configure PowerFactory 2023 SP5 path before importing
-# This ensures the PowerFactory DLLs can be found
-POWERFACTORY_PATH = r"C:\Program Files\DIgSILENT\PowerFactory 2023 SP5"
-if os.path.exists(POWERFACTORY_PATH):
-    os.environ["PATH"] = POWERFACTORY_PATH + ";" + os.environ["PATH"]
+# PowerFactory path detection and configuration
+def _configure_powerfactory_path():
+    """Configure PowerFactory path and return version info."""
+    base_path = r"C:\Program Files\DIgSILENT"
+    
+    # List of known PowerFactory versions (newest first)
+    known_versions = [
+        "PowerFactory 2025",
+        "PowerFactory 2024 SP4",
+        "PowerFactory 2024 SP3", 
+        "PowerFactory 2024 SP2",
+        "PowerFactory 2024 SP1",
+        "PowerFactory 2024",
+        "PowerFactory 2023 SP6",
+        "PowerFactory 2023 SP5",
+        "PowerFactory 2023 SP4",
+        "PowerFactory 2023 SP3",
+        "PowerFactory 2023 SP2",
+        "PowerFactory 2023 SP1",
+        "PowerFactory 2023",
+        "PowerFactory 2022 SP6",
+        "PowerFactory 2022 SP5",
+        "PowerFactory 2022 SP4"
+    ]
+    
+    # Check if base DIgSILENT directory exists
+    if not os.path.exists(base_path):
+        return None, "DIgSILENT installation directory not found"
+    
+    # Find the first available PowerFactory version
+    for version in known_versions:
+        version_path = os.path.join(base_path, version)
+        if os.path.exists(version_path):
+            # Add to PATH for DLL loading
+            if version_path not in os.environ.get("PATH", ""):
+                os.environ["PATH"] = version_path + ";" + os.environ.get("PATH", "")
+            
+            # Also add to Python path if needed
+            if version_path not in sys.path:
+                sys.path.insert(0, version_path)
+                
+            return version_path, version
+    
+    # If no standard version found, try to find any PowerFactory directory
+    try:
+        for item in os.listdir(base_path):
+            if "PowerFactory" in item and os.path.isdir(os.path.join(base_path, item)):
+                version_path = os.path.join(base_path, item)
+                if version_path not in os.environ.get("PATH", ""):
+                    os.environ["PATH"] = version_path + ";" + os.environ.get("PATH", "")
+                if version_path not in sys.path:
+                    sys.path.insert(0, version_path)
+                return version_path, item
+    except OSError:
+        pass
+    
+    return None, "No PowerFactory installation found"
 
+# Configure PowerFactory path before importing
+POWERFACTORY_PATH, POWERFACTORY_VERSION = _configure_powerfactory_path()
+
+# Try to import PowerFactory module
 try:
     import powerfactory as pf
     POWERFACTORY_AVAILABLE = True
-    POWERFACTORY_VERSION = "2023 SP5"
-except ImportError:
+    if POWERFACTORY_VERSION and "PowerFactory" in POWERFACTORY_VERSION:
+        POWERFACTORY_VERSION = POWERFACTORY_VERSION.replace("PowerFactory ", "")
+    else:
+        POWERFACTORY_VERSION = "Unknown Version"
+except ImportError as e:
     POWERFACTORY_AVAILABLE = False
     pf = None
-    POWERFACTORY_VERSION = "Not Available"
+    POWERFACTORY_VERSION = f"Not Available ({str(e)})"
 
 from ..utils.logger import get_logger
 
@@ -55,8 +115,14 @@ class PowerFactoryInterface:
             if POWERFACTORY_AVAILABLE:
                 self.logger.info(f"PowerFactory path configured: {POWERFACTORY_PATH}")
             else:
-                self.logger.error("PowerFactory module not available")
-                raise ImportError("PowerFactory module not found")
+                self.logger.error(f"PowerFactory module not available: {POWERFACTORY_VERSION}")
+                # Don't raise exception here - allow for mock/testing scenarios
+                self.logger.warning("PowerFactory operations will not be available")
+    
+    @property
+    def is_available(self) -> bool:
+        """Check if PowerFactory is available for use."""
+        return POWERFACTORY_AVAILABLE
     
     def connect(self, user_id: Optional[str] = None) -> bool:
         """
@@ -68,6 +134,10 @@ class PowerFactoryInterface:
         Returns:
             True if connection successful, False otherwise
         """
+        if not POWERFACTORY_AVAILABLE:
+            self.logger.error("Cannot connect: PowerFactory module not available")
+            return False
+        
         try:
             if not self._connected:
                 # Store user ID for tracking
@@ -77,6 +147,7 @@ class PowerFactoryInterface:
                 # Try connection with user authentication first (recommended approach)
                 if user_id:
                     try:
+                        self.logger.info(f"Attempting connection with user authentication: {user_id}")
                         self._app = pf.GetApplicationExt(user_id)
                         if self._app is not None:
                             self.logger.info(f"Connected to PowerFactory with user authentication: {user_id}")
@@ -88,13 +159,14 @@ class PowerFactoryInterface:
                         return False
                 else:
                     # Try without authentication
+                    self.logger.info("Attempting connection without user authentication")
                     self._app = pf.GetApplication()
                     if self._app is None:
                         # Try alternative connection method
                         try:
                             self._app = pf.GetApplicationExt()
-                        except:
-                            pass
+                        except Exception as e:
+                            self.logger.debug(f"Alternative connection method failed: {e}")
                         
                         if self._app is None:
                             self.logger.error("Failed to get PowerFactory application. Ensure PowerFactory is running.")
@@ -115,8 +187,6 @@ class PowerFactoryInterface:
         except Exception as e:
             self.logger.error(f"Failed to connect to PowerFactory: {e}")
             return False
-
-
 
     def set_user_id(self, user_id: str) -> None:
         """
