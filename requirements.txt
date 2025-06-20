@@ -1,4 +1,5 @@
 # PowerFactory Network Analysis Requirements
+# Tested with PowerFactory 2023 SP5 and Python 3.11
 # Core production dependencies
 pandas>=2.1.0
 pyyaml>=6.0

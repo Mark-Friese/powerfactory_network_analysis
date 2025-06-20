@@ -455,11 +455,20 @@ class CustomAnalyzer(BaseAnalyzer):
 
 ## Requirements
 
-- **PowerFactory**: 2020 or later (2021+ recommended)
-- **Python**: 3.8+ (3.9+ recommended)
+- **PowerFactory**: 2023 SP5 (recommended) or 2022 SP3 (legacy support)
+- **Python**: 3.11 (tested and recommended)
 - **Operating System**: Windows (PowerFactory requirement)
 - **Memory**: 4GB+ RAM (8GB+ recommended)
 - **Storage**: 100MB+ free space for outputs
+
+### PowerFactory Setup
+The application automatically configures the PowerFactory path:
+```python
+# PowerFactory 2023 SP5 path configuration
+os.environ["PATH"] = r"C:\Program Files\DIgSILENT\PowerFactory 2023 SP5;" + os.environ["PATH"]
+```
+
+For other installation paths, update `src/core/powerfactory_interface.py`.
 
 ## Dependencies
 

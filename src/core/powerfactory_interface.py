@@ -2,16 +2,25 @@
 PowerFactory interface module for managing PowerFactory application connections.
 """
 
+import os
 import logging
 from typing import Optional, List, Dict, Any
 from pathlib import Path
 
+# Configure PowerFactory 2023 SP5 path before importing
+# This ensures the PowerFactory DLLs can be found
+POWERFACTORY_PATH = r"C:\Program Files\DIgSILENT\PowerFactory 2023 SP5"
+if os.path.exists(POWERFACTORY_PATH):
+    os.environ["PATH"] = POWERFACTORY_PATH + ";" + os.environ["PATH"]
+
 try:
     import powerfactory as pf
     POWERFACTORY_AVAILABLE = True
+    POWERFACTORY_VERSION = "2023 SP5"
 except ImportError:
     POWERFACTORY_AVAILABLE = False
     pf = None
+    POWERFACTORY_VERSION = "Not Available"
 
 from ..utils.logger import get_logger
 
@@ -40,7 +49,11 @@ class PowerFactoryInterface:
             self._initialized = True
             self._connected = False
             
-            if not POWERFACTORY_AVAILABLE:
+            # Log PowerFactory version information
+            self.logger.info(f"PowerFactory Interface initialized for version: {POWERFACTORY_VERSION}")
+            if POWERFACTORY_AVAILABLE:
+                self.logger.info(f"PowerFactory path configured: {POWERFACTORY_PATH}")
+            else:
                 self.logger.error("PowerFactory module not available")
                 raise ImportError("PowerFactory module not found")
     

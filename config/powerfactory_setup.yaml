@@ -1,0 +1,51 @@
+# PowerFactory Setup Configuration
+# Configuration for PowerFactory 2023 SP5 integration
+
+powerfactory:
+  version: "2023 SP5"
+  required_python: "3.11"
+  installation_path: "C:\\Program Files\\DIgSILENT\\PowerFactory 2023 SP5"
+  
+  # Alternative installation paths to check
+  alternative_paths:
+    - "C:\\Program Files\\DIgSILENT\\PowerFactory 2023 SP5"
+    - "C:\\Program Files (x86)\\DIgSILENT\\PowerFactory 2023 SP5"
+    - "D:\\Program Files\\DIgSILENT\\PowerFactory 2023 SP5"
+  
+  # Python API configuration
+  python_api:
+    module_name: "powerfactory"
+    required_dlls:
+      - "powerfactory.dll"
+      - "pfapi.dll"
+    
+  # Connection settings
+  connection:
+    timeout_seconds: 30
+    retry_attempts: 3
+    clear_output_window: true
+    
+  # Compatibility notes
+  compatibility:
+    tested_with:
+      - "PowerFactory 2023 SP5"
+      - "Python 3.11"
+    notes:
+      - "Requires PowerFactory to be installed and licensed"
+      - "Python API must be properly configured in PowerFactory"
+      - "User must have appropriate PowerFactory permissions"
+      
+# Version-specific configurations
+version_configs:
+  "2023 SP5":
+    path: "C:\\Program Files\\DIgSILENT\\PowerFactory 2023 SP5"
+    python_compatibility: ["3.9", "3.10", "3.11"]
+    features:
+      - "Enhanced scripting interface"
+      - "Improved API stability"
+      - "Better error handling"
+      
+  "2022 SP3":
+    path: "C:\\Program Files\\DIgSILENT\\PowerFactory 2022 SP3"
+    python_compatibility: ["3.8", "3.9", "3.10"]
+    notes: "Legacy version support" 
